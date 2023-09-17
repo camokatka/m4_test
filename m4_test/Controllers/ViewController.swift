@@ -50,8 +50,8 @@ class ViewController: UIViewController {
         NSLayoutConstraint.activate([
             mainTableView.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
             mainTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
-            mainTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            mainTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20)
+            mainTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mainTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
         
     }
@@ -77,54 +77,23 @@ extension ViewController: UITableViewDataSource {
     }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        var cell = mainTableView.dequeueReusableCell(withIdentifier: cellIDSub, for: indexPath) as! SubTableViewCell
+ 
 
         if indexPath.row == 0 {
-            cell = mainTableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! TableViewCell
-        }
-        
-//        let cell = mainTableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! TableViewCell
-        
-        cell.cellArr.isHidden = true
-        cell.cellCheck.isHidden = true
-
-        
-        if indexPath.row == 0 {
-            
-            if tasks[indexPath.section].isOpen {
-                cell.cellArr.image = UIImageView(image: UIImage(systemName: "chevron.down")).image
-            } else {
-                cell.cellArr.image = UIImageView(image: UIImage(systemName: "chevron.right")).image
-            }
-            
-            if tasks[indexPath.section].isChecked {
-                cell.cellCheck.isHidden = false
-            }
-            
-            cell.cellLabel.text = tasks[indexPath.section].taskName
-            
-            if tasks[indexPath.section].subTask.count != 0 {
-                cell.cellArr.isHidden = false
-            } else {
-                cell.cellArr.isHidden = true
-            }
-            
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as! TableViewCell
+            cell.setTask(t: tasks[indexPath.section])
+            return cell
         } else {
-            
-            cell.cellLabel.text = tasks[indexPath.section].subTask[indexPath.row - 1].subTaskName
-            if tasks[indexPath.section].subTask[indexPath.row - 1].isChecked {
-                cell.cellCheck.isHidden = false
-            }
-            
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellIDSub, for: indexPath) as! SubTableViewCell
+            cell.setSubTask(st: tasks[indexPath.section].subTask[indexPath.row - 1])
+            return cell
         }
-        
-
-        
-        return cell
+            
     }
-    
+        
 }
+    
+
  
 
 extension ViewController: UITableViewDelegate {
@@ -134,25 +103,30 @@ extension ViewController: UITableViewDelegate {
         var count = 0
         
         if indexPath.row == 0 {
-            tasks[indexPath.section].isOpen = !tasks[indexPath.section].isOpen
+            if tasks[indexPath.section].subTask.count != 0 {
+                tasks[indexPath.section].isOpen = !tasks[indexPath.section].isOpen
+            } else {
+                tasks[indexPath.section].isChecked = !tasks[indexPath.section].isChecked
+            }
+            
             tableView.reloadData()
             
-        }
-        
-        if indexPath.row != 0 {
+        } else {
             tasks[indexPath.section].subTask[indexPath.row - 1].isChecked = !tasks[indexPath.section].subTask[indexPath.row - 1].isChecked
             tableView.reloadData()
         }
         
-        for i in 0...tasks[indexPath.section].subTask.count - 1 {
-            if tasks[indexPath.section].subTask[i].isChecked {
+        for item in tasks[indexPath.section].subTask {
+            if item.isChecked {
                 count += 1
             }
         }
         
         if count == tasks[indexPath.section].subTask.count {
-            tasks[indexPath.section].isChecked = true
-            tableView.reloadData()
+            if count != 0 {
+                tasks[indexPath.section].isChecked = true
+                tableView.reloadData()
+            }
         } else {
             tasks[indexPath.section].isChecked = false
             tableView.reloadData()

@@ -57,4 +57,16 @@ class MakerView {
         return view
     }
     
+    func makeImage () -> UIImageView
+    {
+        let image = UIImageView()
+        return image
+    }
+    
+    func makeButton () -> UIButton
+    {
+        let btn = UIButton()
+        return btn
+    }
+    
 }

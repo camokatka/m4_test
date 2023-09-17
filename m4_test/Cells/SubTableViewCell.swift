@@ -4,17 +4,15 @@ import UIKit
 
 class SubTableViewCell: UITableViewCell {
     
-    var cellArr_ = UIView()
-    
-    var cellArr = UIImageView()
+    var cellArr = MakerView.shared.makeImage()
     
     let cellView = MakerView.shared.makeCellVIew()
 
     var cellLabel = MakerView.shared.makeCellLabel()
     
-    let cellImage = UIImageView(image: UIImage(named: "square"))
+    let cellImage = MakerView.shared.makeImage()
     
-    let cellCheck = UIButton()
+    let cellCheck = MakerView.shared.makeButton()
     
     
 
@@ -31,19 +29,16 @@ class SubTableViewCell: UITableViewCell {
     
     private func initCell() {
         
-        contentView.backgroundColor = UIColor(cgColor: Constants.bgdColor)
-
-        
         contentView.addSubview(cellView)
         cellView.translatesAutoresizingMaskIntoConstraints = false
-
-        
+        cellView.backgroundColor = UIColor(cgColor: Constants.bgdColor)
+        cellView.layer.cornerRadius = 0
         NSLayoutConstraint.activate([
 
             cellView.topAnchor.constraint(equalTo: contentView.topAnchor),
             cellView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            cellView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            cellView.trailingAnchor.constraint(equalTo: contentView.leadingAnchor)
+            cellView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            cellView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         ])
         
         cellView.addSubview(cellArr)
@@ -54,13 +49,14 @@ class SubTableViewCell: UITableViewCell {
             cellArr.widthAnchor.constraint(equalToConstant: 20),
             cellArr.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 10),
             cellArr.bottomAnchor.constraint(equalTo: cellView.bottomAnchor, constant: -10),
-            cellArr.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 20)
+            cellArr.leadingAnchor.constraint(equalTo: cellView.leadingAnchor, constant: 30)
         ])
         
         
         cellView.addSubview(cellImage)
         
         cellImage.translatesAutoresizingMaskIntoConstraints = false
+        cellImage.image = UIImage(named: "square")
         
         NSLayoutConstraint.activate([
             cellImage.topAnchor.constraint(equalTo: cellView.topAnchor, constant: 10),
@@ -89,5 +85,16 @@ class SubTableViewCell: UITableViewCell {
             cellLabel.leadingAnchor.constraint(equalTo: cellImage.trailingAnchor, constant: 5),
         ])
         
+    }
+    
+    func setSubTask (st: SubTask) {
+        
+        cellArr.isHidden = true
+        cellCheck.isHidden = true
+        
+        cellLabel.text = st.subTaskName
+        if st.isChecked {
+            cellCheck.isHidden = false
+        }
     }
 }
